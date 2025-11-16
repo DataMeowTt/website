@@ -1,38 +1,38 @@
-# 🏸 Datsan247 - Đặt Sân Cầu Lông Online
+# 🏸 Datsan247 - Book Badminton Court Online
 
-[🌐 Truy cập website](www.datsan247.com)
-
----
-
-## Giới thiệu
-
-**Datsan247** là nền tảng đặt sân cầu lông tiện lợi, giúp người dùng:
-
-- Chỉ cần **ngồi tại nhà**, click chuột để đặt sân.
-- Tránh các bước rườm rà như gọi điện, inbox, chờ thông tin và thanh toán.
-- Tiết kiệm thời gian và mang lại trải nghiệm liền mạch.
-
-Trong bối cảnh **dân số ngày càng tăng** và nhu cầu thể thao phát triển, Datsan247 mang đến **giải pháp hiện đại và nhanh chóng** cho những người yêu cầu cầu lông.
+[🌐 Visit website](www.datsan247.com)
 
 ---
 
-### Tính năng nổi bật
+## Introduction
 
-- Giao diện **đẹp mắt** và **thân thiện với người dùng**
-- **Điều hướng dễ dàng**
-- **AI Chatbox 24/7** hỗ trợ giải đáp thắc mắc
-- Bảo mật thông tin nhạy cảm
-- Quy trình đặt sân **đơn giản và liền mạch**
+**Datsan247** is a convenient badminton court booking platform, helping users:
 
----
+- Just **sit at home**, click to book the court.
 
-## Quy trình sử dụng
+- Avoid cumbersome steps such as calling, inboxing, waiting for information and payment.
+- Save time and bring a seamless experience.
 
-1. Chọn sân
-2. Chọn khung giờ
-3. Thanh toán (chuyển khoản)
-4. Thuê đồ (tuỳ chọn)
-5. Hoàn tất đặt sân ✅
+In the context of **growing population** and growing sports demand, Datsan247 brings **modern and fast solutions** to those who require badminton.
 
 ---
 
+### Outstanding features
+
+- **Beautiful** and **User-friendly** interface
+- **Easy navigation**
+- **AI Chatbox 24/7** to answer questions
+- Secure sensitive information
+- **Simple and seamless** course booking process
+
+---
+
+## Usage process
+
+1. Choose a course
+2. Choose a time slot
+3. Payment (transfer)
+4. Equipment rental (optional)
+5. Complete course booking ✅
+
+---
