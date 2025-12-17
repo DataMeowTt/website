@@ -86,6 +86,13 @@ import path from "path";
   const uploadDir = path.join(process.cwd(), "uploads");
   app.use('/uploads', express.static(uploadDir));
 
+  // Apply CSRF Protection on post
+  app.put(csrfProtection)
+  app.post(csrfProtection)
+  app.patch(csrfProtection)
+  app.delete(csrfProtection)
+
+  app.use("/api/users", userRoutes);
 
   // Server BackEnd
   const server = http.createServer(app);
