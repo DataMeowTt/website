@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import helmet from "helmet";
 import session from "express-session";
 import dotenv from "dotenv";
+import path from "path";
 
 import {protect} from "./src/middleware/authMiddleware.js";
 import csrfConfig from "./src/middleware/csrfConfig.js";
@@ -13,7 +14,12 @@ import csrfConfig from "./src/middleware/csrfConfig.js";
 import connectDB from "./src/config/Mongodb.js";
 import { initSocket } from "./src/config/socket.js";
 
-import path from "path";
+import userRoutes from "./src/routes/userRoute.js"
+import adminRoute from "./src/routes/adminRoute.js";
+import AccountRoute from "./src/routes/accountRoutes.js";
+
+
+
 
 
   if (process.env.NODE_ENV !== 'test') {
@@ -93,6 +99,11 @@ import path from "path";
   app.delete(csrfProtection)
 
   app.use("/api/users", userRoutes);
+  
+
+  // others /api/admin/*
+  app.use("/api/admin/account", AccountRoute);
+  app.use("/api/admin", adminRoute);
 
   // Server BackEnd
   const server = http.createServer(app);
