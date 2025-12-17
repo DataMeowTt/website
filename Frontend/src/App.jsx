@@ -8,6 +8,7 @@ import './styles/global.css';
 
 import Centers from "./pages/Centers";
 import News from './pages/News';
+import Policy from './pages/Policy';
 
 import { AuthProvider } from './contexts/AuthContext';
 
@@ -28,7 +29,9 @@ function App() {
             }
           />
           <Route path="/centers" element={<Centers />} />
+
           <Route path="/news" element={<News />} />
+          <Route path="/policy" element={<Policy />} />
         </Routes>
       </Router>
     </AuthProvider>
