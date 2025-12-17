@@ -1,5 +1,4 @@
 import axiosInstance from "../config/axiosConfig";
-
 // Đăng ký người dùng
 export const registerUser = async (userData) => {
   try {
@@ -11,7 +10,6 @@ export const registerUser = async (userData) => {
     throw error;
   }
 };
-
 
 const getCsrfToken = async () => {
   try {
@@ -144,7 +142,6 @@ export const resetPasswordApi = async (token, userId, newPassword) => {
     throw error;
   }
 }
-
 
 // Gửi đánh giá
 export const submitRating = async (ratingData) => {
