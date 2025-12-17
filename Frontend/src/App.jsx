@@ -5,7 +5,9 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './pages/Home';
 import './styles/global.css';
+
 import Centers from "./pages/Centers";
+import News from './pages/News';
 
 import { AuthProvider } from './contexts/AuthContext';
 
@@ -26,6 +28,7 @@ function App() {
             }
           />
           <Route path="/centers" element={<Centers />} />
+          <Route path="/news" element={<News />} />
         </Routes>
       </Router>
     </AuthProvider>
