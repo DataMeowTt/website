@@ -1,19 +1,19 @@
-  import express from "express";
-  import cors from "cors";
-  import http from "http";
-  import { Server as SocketIOServer } from "socket.io";
-  import cookieParser from "cookie-parser";
-  import helmet from "helmet";
-  import {protect} from "./src/middleware/authMiddleware.js";
-  import csrfConfig from "./src/middleware/csrfConfig.js";
-  import session from "express-session";
-  import dotenv from "dotenv";
+import express from "express";
+import cors from "cors";
+import http from "http";
+import { Server as SocketIOServer } from "socket.io";
+import cookieParser from "cookie-parser";
+import helmet from "helmet";
+import session from "express-session";
+import dotenv from "dotenv";
 
-  import connectDB from "./src/config/Mongodb.js";
+import {protect} from "./src/middleware/authMiddleware.js";
+import csrfConfig from "./src/middleware/csrfConfig.js";
 
-  import { initSocket } from "./src/config/socket.js";
+import connectDB from "./src/config/Mongodb.js";
+import { initSocket } from "./src/config/socket.js";
 
-  import path from "path";
+import path from "path";
 
 
   if (process.env.NODE_ENV !== 'test') {
@@ -40,16 +40,19 @@
       },
     })
   );
+
   app.use(express.json({ limit: "10mb" }));
-  app.use(
-    cors({
+
+  app.use(cors({
       origin: ["http://localhost:5173", "http://localhost:5174"],
       methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
       allowedHeaders: ["Content-Type", "Authorization", "X-CSRF-Token"],
       credentials: true,
     })
   );
+
   app.use(cookieParser());
+
 
   // Configure session
   app.use(
@@ -66,6 +69,7 @@
     })
   );
 
+
   // Endpoint to get CSRF token (unprotected)
   app.get('/api/csrf-token', protect, csrfProtection, (req, res) => {
     try {
@@ -77,11 +81,13 @@
     }
   });
 
+
   // Serve static files from uploads directory
   const uploadDir = path.join(process.cwd(), "uploads");
   app.use('/uploads', express.static(uploadDir));
 
 
+  // Server BackEnd
   const server = http.createServer(app);
 
   // Chỉ khởi tạo Socket.IO khi không ở trong môi trường test
@@ -100,6 +106,7 @@
     console.log("Socket.IO không được khởi tạo trong môi trường TEST.");
   }
 
+
   // Error handling middleware
   app.use((err, req, res, next) => {
     if (err.code === 'EBADCSRFTOKEN') {
@@ -110,6 +117,7 @@
   });
 
   export { app, server, io };
+
 
   if (process.env.NODE_ENV !== 'test') {
     connectDB();
