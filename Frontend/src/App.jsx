@@ -29,7 +29,8 @@ function App() {
             }
           />
           <Route path="/centers" element={<Centers />} />
-
+          <Route path="/booking" element={<Booking />} />
+          <Route path="/payment" element={<Payment />} />
           <Route path="/news" element={<News />} />
           <Route path="/policy" element={<Policy />} />
         </Routes>
