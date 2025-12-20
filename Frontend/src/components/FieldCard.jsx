@@ -26,7 +26,6 @@ const FieldCard = ({ field }) => {
   };
 
   const goToBooking = () => {
-    // Logic điều hướng cơ bản cho giai đoạn UI layout
     navigate('/booking', {
       state: {
         fieldId: id,
