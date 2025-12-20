@@ -1,6 +1,15 @@
 import axiosInstance from "../config/axiosConfig";
 
-// Lấy danh sách trạng thái các sân tại một trung tâm và ngày cụ thể
+export const togglePendingTimeslot = async (payload) => {
+  try {
+    const response = await axiosInstance.post("/api/booking/pending/toggle", payload);
+    return response.data;
+  } catch (error) {
+    console.error("Error toggling pending timeslot:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
 export const getPendingMapping = async (centerId, date) => {
   try {
     const response = await axiosInstance.get("/api/booking/pending/mapping", {
@@ -8,51 +17,134 @@ export const getPendingMapping = async (centerId, date) => {
     });
     return response.data.mapping;
   } catch (error) {
-    console.error("Lỗi lấy mapping đặt sân:", error);
+    console.error("Error fetching pending mapping:", error.response?.data || error.message);
     throw error;
   }
 };
 
-// Toggle (Chọn/Bỏ chọn) một khung giờ (giữ chỗ tạm thời)
-export const togglePendingTimeslot = async (payload) => {
+export const getMyPendingTimeslots = async (centerId, date) => {
   try {
-    const response = await axiosInstance.post("/api/booking/pending/toggle", payload);
+    const response = await axiosInstance.get("/api/booking/pending/my-timeslots", {
+      params: { centerId, date }
+    });
+    return response.data.mapping;
+  } catch (error) {
+    console.error("Error fetching my pending timeslots:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const confirmBookingToDB = async ({ userId, centerId, date, totalAmount, name }) => {
+  try {
+    const response = await axiosInstance.post("/api/booking/pending/pendingBookingToDB", {
+      userId,
+      centerId,
+      date,
+      totalAmount,
+      name
+    });
     return response.data;
   } catch (error) {
-    console.error("Lỗi giữ chỗ khung giờ:", error);
+    console.error("Error confirming booking to DB:", error.response?.data || error.message);
     throw error;
   }
 };
 
-// Xác nhận lưu thông tin đặt sân vào Database trước khi thanh toán
-export const confirmBookingToDB = async (payload) => {
+export const confirmBooking = async ({ userId, centerId, date, totalPrice, paymentImage, note }) => {
   try {
-    const response = await axiosInstance.post("/api/booking/pending/pendingBookingToDB", payload);
+    const response = await axiosInstance.post("/api/booking/pending/bookedBookingInDB", {
+      userId,
+      centerId,
+      date,
+      totalAmount: totalPrice,
+      paymentImage, 
+      note
+    });
     return response.data;
   } catch (error) {
-    console.error("Lỗi xác nhận booking:", error);
+    console.error("Error confirming booking in DB:", error.response?.data || error.message);
     throw error;
   }
 };
 
-// Lấy thống kê khung giờ phổ biến
+export const checkPendingExists = async ({ userId, centerId }) => {
+  try {
+    const response = await axiosInstance.get("/api/booking/pending/exists", {
+      params: { userId, centerId }
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error checking pending booking existence:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const clearAllPendingBookings = async ({ userId, centerId }) => {
+  try {
+    const response = await axiosInstance.post("/api/booking/pending/clear-all", { userId, centerId });
+    return response.data;
+  } catch (error) {
+    console.error("Error clearing all pending bookings:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const cancelBooking = async () => {
+  try {
+    const response = await axiosInstance.post("/api/booking/cancel-booking");
+    return response.data;
+  } catch (error) {
+    console.error("Error canceling booking:", error.response?.data || error.message);
+    throw error;
+  }
+};
+
 export const getPopularTimeSlot = async () => {
   try {
     const response = await axiosInstance.get('/api/booking/popular-times');
-    return response.data.data;
+    if (response.data.success) {
+      return response.data.data;
+    }
+    throw new Error(response.data.message || 'Lỗi khi lấy dữ liệu.');
   } catch (error) {
-    console.error('Lỗi lấy thống kê thời gian:', error);
+    console.error('Error in getPopularTimeSlot:', error);
     throw error;
   }
 };
 
-// Xóa tất cả các booking đang chờ xử lý của user
-export const clearAllPendingBookings = async (payload) => {
+export const getBookingHistory = async (userId, page = 1, limit = 30) => {
   try {
-    const response = await axiosInstance.post("/api/booking/pending/clear-all", payload);
-    return response.data;
+    const response = await axiosInstance.get("/api/booking/get-booking-history", {
+      params: {
+        userId, // Truyền userId để BE biết lấy lịch sử của user nào
+        page,   // Trang hiện tại
+        limit,  // Số bản ghi mỗi trang
+      },
+    });
+
+    console.log("API Response:", response);
+
+    // Kiểm tra phản hồi từ server
+    if (response.data && response.data.bookingHistory) {
+      return response.data; // Trả về dữ liệu phân trang: { history, total, page, limit, totalPages }
+    }
+
+    throw new Error(response.data?.message || "API trả về nhưng không có dữ liệu lịch sử.");
   } catch (error) {
-    console.error("Lỗi dọn dẹp booking tạm thời:", error);
+    console.error("Error in getBookingHistory:", error?.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const deleteBooking = async (bookingId) => {
+  try {
+    const response = await axiosInstance.post("/api/booking/delete-booking", { bookingId });
+    if (response.data.success) {
+      return response.data;
+    }
+    throw new Error(response.data.message || 'Lỗi khi xóa booking.');
+  } catch (error) {
+    console.error("Error in deleteBooking:", error.response?.data || error.message);
     throw error;
   }
 };

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { FaPen, FaCheck } from 'react-icons/fa';
 
 const EditableInfoCard = ({ label, value, onConfirm }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -7,47 +6,40 @@ const EditableInfoCard = ({ label, value, onConfirm }) => {
 
   const handleButtonClick = () => {
     if (isEditing) {
-      // Khi nhấn xác nhận (dấu tích)
-      if (onConfirm) onConfirm(tempValue);
+      // Khi nhấn xác nhận, gọi hàm onConfirm với giá trị mới
+      onConfirm(tempValue);
       setIsEditing(false);
     } else {
-      // Bắt đầu chỉnh sửa
       setIsEditing(true);
     }
   };
 
+  // Tạo một ID hợp lý dựa trên label để đảm bảo tính duy nhất
+  // Ví dụ: "Họ và tên" -> "ho-va-ten"
+  const sanitizedLabel = label.toLowerCase().replace(/\s+/g, '-').normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D");
+
   return (
-    <div className="bg-white p-3 rounded-lg border border-gray-200 shadow-sm flex items-center justify-between hover:shadow-md transition-shadow duration-200 h-full">
-      <div className="flex flex-col flex-grow mr-3 overflow-hidden">
-        <span className="text-[10px] text-gray-500 uppercase tracking-wider font-bold mb-1">
-          {label}
-        </span>
-        
+    <div id={`${sanitizedLabel}-info-card`} className="info-card enhanced">
+      <div id={`${sanitizedLabel}-label`} className="info-label">{label}</div>
+      <div className="info-value">
         {isEditing ? (
           <input
+            id={`${sanitizedLabel}-input`} // ID cho ô input
             type="text"
             value={tempValue}
             onChange={(e) => setTempValue(e.target.value)}
-            className="w-full border-b-2 border-green-500 focus:outline-none text-gray-800 py-0.5 bg-transparent"
-            autoFocus
           />
         ) : (
-          <span className="text-gray-800 font-medium truncate text-sm" title={value}>
-            {value}
-          </span>
+          <span id={`${sanitizedLabel}-display-value`}>{value}</span> // ID cho giá trị hiển thị
         )}
       </div>
-      
       <button
+        id={`${sanitizedLabel}-${isEditing ? 'confirm' : 'edit'}-button`} // ID thay đổi dựa trên trạng thái
+        className="edit-info-btn"
+        title={isEditing ? "Xác nhận" : "Chỉnh sửa"}
         onClick={handleButtonClick}
-        className={`p-2 rounded-full flex-shrink-0 transition-colors duration-200 ${
-          isEditing 
-            ? "bg-green-100 text-green-700 hover:bg-green-200" 
-            : "text-gray-400 hover:bg-gray-100 hover:text-green-600"
-        }`}
-        title={isEditing ? "Lưu lại" : "Chỉnh sửa"}
       >
-        {isEditing ? <FaCheck size={14} /> : <FaPen size={14} />}
+        <i className={`fas ${isEditing ? "fa-check" : "fa-pen"}`}></i>
       </button>
     </div>
   );

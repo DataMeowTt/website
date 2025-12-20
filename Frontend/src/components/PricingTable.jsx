@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { getCenterPricing } from "../apis/centers";
+
 const PricingTable = ({ centerId, onClose }) => {
   const [pricing, setPricing] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -8,20 +10,8 @@ const PricingTable = ({ centerId, onClose }) => {
     const fetchPricing = async () => {
       try {
         setLoading(true);
-    
-        await new Promise(resolve => setTimeout(resolve, 800));
-        
-        const mockData = {
-          title: "Sân Cầu Lông Tiêu Chuẩn",
-          weekday: [
-            { startTime: "05:00", endTime: "17:00", price: 60000 },
-            { startTime: "17:00", endTime: "22:00", price: 90000 }
-          ],
-          weekend: [
-            { startTime: "05:00", endTime: "22:00", price: 100000 }
-          ]
-        };
-        setPricing(mockData);
+        const data = await getCenterPricing(centerId);
+        setPricing(data);
       } catch (err) {
         console.error("Error fetching center pricing:", err);
         setError("Không thể tải dữ liệu bảng giá");
@@ -76,7 +66,9 @@ const PricingTable = ({ centerId, onClose }) => {
                   <tbody>
                     {pricing.weekday.map((item, index) => (
                       <tr key={index}>
-                        <td>{item.startTime} - {item.endTime}</td>
+                        <td>
+                          {item.startTime} - {item.endTime}
+                        </td>
                         <td>{formatCurrency(item.price)}</td>
                       </tr>
                     ))}
@@ -96,7 +88,9 @@ const PricingTable = ({ centerId, onClose }) => {
                   <tbody>
                     {pricing.weekend.map((item, index) => (
                       <tr key={index}>
-                        <td>{item.startTime} - {item.endTime}</td>
+                        <td>
+                          {item.startTime} - {item.endTime}
+                        </td>
                         <td>{formatCurrency(item.price)}</td>
                       </tr>
                     ))}
@@ -109,6 +103,7 @@ const PricingTable = ({ centerId, onClose }) => {
                 <ul>
                   <li>Giá trên áp dụng cho 1 giờ đặt sân.</li>
                   <li>Đặt sân từ 2 giờ trở lên được giảm 5% tổng giá trị.</li>
+                  <li>Khách hàng thành viên được giảm thêm 10% tổng giá trị.</li>
                   <li>Vui lòng đến sớm 10 phút trước giờ đặt sân.</li>
                 </ul>
               </div>

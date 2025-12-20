@@ -4,18 +4,51 @@ import BookingHeader from "./BookingHeader";
 
 const SessionExpired = () => {
   const navigate = useNavigate();
+  // Đường dẫn ảnh phiên hết hạn (bạn có thể điều chỉnh theo cấu trúc dự án)
+  const expiredImagePath = "/images/TimeExpired.gif";
+
+  // Xử lý tự động navigate về trang chủ sau 3 giây và xử lý sự kiện back
   useEffect(() => {
-    const timer = setTimeout(() => navigate("/"), 5000);
-    return () => clearTimeout(timer);
+    // Tự động navigate về trang chủ sau 3 giây
+    const timer = setTimeout(() => {
+      navigate("/");
+    }, 3000);
+
+    // Xử lý khi nhấn back trên trình duyệt
+    const handlePopState = () => {
+      navigate("/");
+    };
+    window.addEventListener("popstate", handlePopState);
+
+    // Cleanup: Xóa timeout và sự kiện popstate khi component unmount
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("popstate", handlePopState);
+    };
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-green-800 text-white flex flex-col">
-      <BookingHeader title="Hết hạn phiên" onBack={() => navigate("/")} />
-      <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
-        <h2 className="text-3xl font-bold mb-4">HẾT HẠN THANH TOÁN!</h2>
-        <p className="mb-8">Thời gian giữ chỗ của bạn đã hết hạn. Vui lòng thực hiện đặt sân lại.</p>
-        <button onClick={() => navigate("/")} className="bg-yellow-400 text-black px-8 py-3 rounded-lg font-bold">Quay về Trang Chủ</button>
+    <div className="min-h-screen w-full flex flex-col bg-green-800 text-white">
+      {/* Header luôn nằm ở trên cùng */}
+      <BookingHeader title="Thanh toán" onBack={() => navigate("/")} />
+
+      {/* Nội dung chính, căn giữa theo chiều dọc và ngang */}
+      <div className="flex flex-col items-center justify-center flex-1 p-4">
+        {/* Hiển thị ảnh phiên hết hạn */}
+        <img
+          src={expiredImagePath}
+          alt="Phiên đặt sân đã hết hạn"
+          className="max-w-full mb-6"
+        />
+        <p className="mb-8 text-3xl text-center font-mono">
+          Thời gian đặt sân của bạn đã hết hạn do chờ thanh toán quá lâu.
+        </p>
+        <button
+          onClick={() => navigate("/")}
+          className="px-6 py-3 bg-yellow-300 text-black font-bold text-3xl rounded hover:bg-yellow-400 transition font-mono"
+        >
+          Quay về trang chủ
+        </button>
       </div>
     </div>
   );
