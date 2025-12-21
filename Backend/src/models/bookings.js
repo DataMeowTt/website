@@ -17,14 +17,17 @@ const bookingSchema = new Schema({
     default: "pending",
     index: true,
   },
-  expiresAt: { type: Date, default: null }, // Thời gian hết hạn giữ chỗ
+  expiresAt: { type: Date, default: null },
   totalAmount: { type: Number, required: true },
-  bookingCode: { type: String, unique: true, sparse: true, index: true }, // Mã #Bill...
+  bookingCode: { type: String, unique: true, sparse: true, index: true },
   createdAt: { type: Date, default: Date.now, index: true },
   note: { type: String, default: "" },
+  paymentImage: { type: Buffer, default: null },
+  imageType: { type: String, default: "image/jpeg" },
+  pointEarned: { type: Number, default: 0 },
 });
 
-// Middleware tự động tạo mã BookingCode và tính thời gian hết hạn
+
 bookingSchema.pre("save", async function (next) {
   if (this.isNew && !this.bookingCode) {
     const now = new Date();
@@ -32,14 +35,14 @@ bookingSchema.pre("save", async function (next) {
     const randomSuffix = Math.floor(1000 + Math.random() * 9000);
     this.bookingCode = `#Bill${formattedDate}${randomSuffix}`;
   }
-
   if (this.status === "pending" && this.isNew) {
-    this.expiresAt = new Date(Date.now() + 5 * 60 * 1000); // 5 phút
+    this.expiresAt = new Date(Date.now() + 5 * 60 * 1000);
+  } else if (this.status !== "pending") {
+    this.expiresAt = null;
   }
   next();
 });
 
-// TTL Index: Tự động xóa document khi đến thời điểm expiresAt
 bookingSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 const Booking = mongoose.models.Booking || model("Booking", bookingSchema);
