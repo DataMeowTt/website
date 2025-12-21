@@ -1,24 +1,27 @@
 import Center from "../models/centers.js";
-import Court from "../models/courts.js";
 
-export const getAllCenters = async (query) => {
-  const { search, location, sort } = query;
-  let filter = {};
-  if (search) filter.name = { $regex: search, $options: "i" };
-  if (location) filter.location = location;
-  return await Center.find(filter);
+// Lấy tất cả các nhà thi đấu
+export const findAll = async () => {
+  return await Center.find({});
 };
 
-export const getCenterById = async (id) => {
+// Tìm kiếm 1 nhà thi đấu theo id
+export const findById = async (id) => {
   return await Center.findById(id);
 };
 
-// --- MỚI: Lấy danh sách sân của trung tâm ---
-export const getCourtsByCenterId = async (centerId) => {
-  return await Court.find({ centerId });
+// Tạo mới 1 nhà thi đấu
+export const create = async (centerData) => {
+  const center = new Center(centerData);
+  return await center.save();
 };
 
-export const getCenterPricing = async (id) => {
-  const center = await Center.findById(id).select("pricing name");
-  return { title: center.name, weekday: center.pricing.weekday, weekend: center.pricing.weekend };
+// Cập nhật thông tin nhà thi đấu theo id
+export const update = async (id, centerData) => {
+  return await Center.findByIdAndUpdate(id, centerData, { new: true });
+};
+
+// Xóa nhà thi đấu theo id
+export const remove = async (id) => {
+  return await Center.findByIdAndDelete(id);
 };

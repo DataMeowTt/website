@@ -1,15 +1,27 @@
 import express from "express";
-import { getCenters, getCenterDetail, getPricing } from "../controllers/centersController.js";
+import {
+  getCenters,
+  getCenterById,
+  createCenter,
+  updateCenter,
+  deleteCenter,
+} from "../controllers/centersController.js";
 
 const router = express.Router();
 
-// Lấy danh sách trung tâm (có hỗ trợ search/filter qua query)
+// Lấy danh sách tất cả các nhà thi đấu
 router.get("/", getCenters);
 
-// Lấy chi tiết thông tin một trung tâm cụ thể
-router.get("/:id", getCenterDetail);
+// Lấy thông tin 1 nhà thi đấu theo id
+router.get("/:id", getCenterById);
 
-// Lấy bảng giá phục vụ cho Modal Pricing ở Frontend
-router.get("/:id/pricing", getPricing);
+// Tạo mới 1 nhà thi đấu
+router.post("/", createCenter);
+
+// Cập nhật thông tin 1 nhà thi đấu theo id
+router.put("/:id", updateCenter);
+
+// Xóa nhà thi đấu theo id
+router.delete("/:id", deleteCenter);
 
 export default router;
