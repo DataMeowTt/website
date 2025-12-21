@@ -385,6 +385,14 @@ const Service = () => {
       .replace('₫', 'đ');
   };
 
+  const handleCheckout = () => {
+    if (!user) {
+      alert("Bạn cần đăng nhập để đặt hàng!");
+      return;
+    }
+    setShowConfirmModal(true);
+  };
+
   const confirmCheckout = async () => {
     if (!user || !user.name) {
       alert("Không tìm thấy thông tin người dùng. Vui lòng đăng nhập lại!");
@@ -632,6 +640,150 @@ const Service = () => {
           </div>
         </div>
       </div>
+
+      <div className={`cart-sidebar ${cartOpen ? 'open' : ''}`}>
+        <div className="cart-header">
+          <h3>Giỏ hàng của bạn</h3>
+          <button className="close-cart" onClick={() => setCartOpen(false)}>
+            <X size={20} />
+          </button>
+        </div>
+
+        <div className="cart-items">
+          {cart.length > 0 ? (
+            cart.map(item => (
+              <div className="cart-item" key={item.id}>
+                <div className="cart-item-image">
+                  <img src={item.image || '/images/placeholder.jpg'} alt={item.name} />
+                </div>
+                <div className="cart-item-details">
+                  <h4>{item.name}</h4>
+                  <p className="cart-item-price">{formatCurrency(item.price)}</p>
+                  <div className="cart-item-quantity">
+                    <button onClick={() => updateQuantity(item.id, -1)} disabled={item.quantity <= 1}>
+                      <Minus size={16} />
+                    </button>
+                    <span>{item.quantity}</span>
+                    <button onClick={() => updateQuantity(item.id, 1)}>
+                      <Plus size={16} />
+                    </button>
+                    <button className="remove-item" onClick={() => removeFromCart(item.id)}>
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : (
+            <div className="empty-cart">
+              <img src="/images/icons/empty-cart.png" alt="Giỏ hàng trống" />
+              <p>Giỏ hàng của bạn đang trống</p>
+              <button className="continue-shopping" onClick={() => setCartOpen(false)}>
+                Tiếp tục mua sắm
+              </button>
+            </div>
+          )}
+        </div>
+        
+        {cart.length > 0 && (
+          <div className="cart-footer">
+            <div 
+              style={{
+                backgroundColor: '#fff3cd',
+                padding: '10px',
+                borderRadius: '5px',
+                marginBottom: '10px',
+                borderLeft: '4px solid #ffca28',
+                color: '#856404',
+                fontSize: '0.9rem'
+              }}
+            >
+              <strong>Lưu ý:</strong> Hiện tại chưa hỗ trợ thanh toán banking nên quý khách vui lòng đến sân thanh toán.
+            </div>
+            <div className="cart-total">
+              <span>Tổng cộng:</span>
+              <span>{formatCurrency(cartTotal)}</span>
+            </div>
+            <button
+              className="checkout-button"
+              onClick={handleCheckout}
+            >
+              Thanh toán ngay
+            </button>
+            <button className="continue-shopping" onClick={() => setCartOpen(false)}>
+              Tiếp tục mua sắm
+            </button>
+          </div>
+        )}
+      </div>
+
+      {showConfirmModal && (
+        <>
+          <div 
+            className="modal-overlay" 
+            style={{
+              position: 'fixed',
+              top: '0',
+              left: '0',
+              width: '100%',
+              height: '100%',
+              backgroundColor: 'rgba(0, 0, 0, 0.6)',
+              zIndex: '900',
+              display: 'block'
+            }}
+            onClick={() => setShowConfirmModal(false)}
+          />
+          <div 
+            className="confirm-modal"
+            style={{
+              position: 'fixed',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              backgroundColor: 'white',
+              padding: '20px',
+              borderRadius: '10px',
+              zIndex: '1000',
+              width: '300px',
+              textAlign: 'center'
+            }}
+          >
+            <h3 style={{ marginBottom: '20px' }}>Xác nhận đặt hàng</h3>
+            <p>Bạn có chắc chắn muốn đặt hàng không?</p>
+            <div style={{ marginTop: '20px' }}>
+              <button
+                onClick={confirmCheckout}
+                style={{
+                  backgroundColor: '#34a853',
+                  color: 'white',
+                  padding: '10px 20px',
+                  border: 'none',
+                  borderRadius: '5px',
+                  marginRight: '10px',
+                  cursor: 'pointer'
+                }}
+              >
+                Xác nhận
+              </button>
+              <button
+                onClick={() => setShowConfirmModal(false)}
+                style={{
+                  backgroundColor: '#e50914',
+                  color: 'white',
+                  padding: '10px 20px',
+                  border: 'none',
+                  borderRadius: '5px',
+                  cursor: 'pointer'
+                }}
+              >
+                Hủy
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+      
+      {cartOpen && <div className="cart-overlay" onClick={() => setCartOpen(false)}></div>}
       
       <Footer />
     </>
