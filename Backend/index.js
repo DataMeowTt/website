@@ -32,7 +32,6 @@ if (process.env.NODE_ENV !== 'test') {
 const app = express();
 const csrfProtection = csrfConfig;
 
-// Middleware bảo mật
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" },
@@ -96,14 +95,14 @@ app.use(["/api/booking", "/api/bill"], csrfProtection); // Đảm bảo các rou
 
 app.use("/api/users", userRoutes);
 
-// --- ĐĂNG KÝ CÁC ROUTE CỦA COMMIT 2 ---
-app.use("/api/booking", bookingRoutes);      // Đặt sân & giữ chỗ
-app.use("/api/centers", centersRoutes);      // Danh sách trung tâm (Public)
-app.use("/api/center", centerRoutes);        // Chi tiết từng trung tâm
-app.use("/api/bill", billManageRoutes);      // Quản lý hóa đơn & lịch sử
-app.use("/api/center-status", centerStatusRoutes); // Trạng thái hoạt động của sân
-// --------------------------------------
 
+app.use("/api/booking", bookingRoutes);   
+app.use("/api/centers", centersRoutes);   
+app.use("/api/center", centerRoutes);     
+app.use("/api/bill", billManageRoutes);    
+app.use("/api/center-status", centerStatusRoutes); 
+app.use("/api/admin/center-status", centerStatusRoute);
+  
 app.use("/api/admin/account", AccountRoute);
 app.use("/api/admin", adminRoute);
 
