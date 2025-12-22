@@ -23,7 +23,9 @@ import bookingRoutes from "./src/routes/bookingRoute.js";
 import centersRoutes from "./src/routes/centersRoute.js";
 import centerRoutes from "./src/routes/centerRoute.js";
 import billManageRoutes from "./src/routes/billManageRoute.js";
-// ---------------------------------------
+import centerStatusRoute from "./src/routes/centerStatusRoute.js";
+import ratingClientRoute from "./src/routes/ratingsClientRoute.js";
+import ratingRoute from "./src/routes/ratingRoutes.js";
 
 if (process.env.NODE_ENV !== 'test') {
   dotenv.config();
@@ -100,9 +102,8 @@ app.use("/api/booking", bookingRoutes);
 app.use("/api/centers", centersRoutes);   
 app.use("/api/center", centerRoutes);     
 app.use("/api/bill", billManageRoutes);    
-app.use("/api/center-status", centerStatusRoutes); 
 app.use("/api/admin/center-status", centerStatusRoute);
-  
+app.use("/api/admin/ratings", ratingRoute);
 app.use("/api/admin/account", AccountRoute);
 app.use("/api/admin", adminRoute);
 
