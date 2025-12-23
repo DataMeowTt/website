@@ -94,18 +94,19 @@ app.use('/uploads', express.static(uploadDir));
 
 // Áp dụng bảo vệ CSRF cho các phương thức thay đổi dữ liệu
 app.use(["/api/booking", "/api/bill"], csrfProtection); // Đảm bảo các route đặt sân/thanh toán được bảo vệ
-
 app.use("/api/users", userRoutes);
-
-
+app.use("/api/contact", contactRoutes);
 app.use("/api/booking", bookingRoutes);   
 app.use("/api/centers", centersRoutes);   
-app.use("/api/center", centerRoutes);     
-app.use("/api/bill", billManageRoutes);    
+app.use("/api/center", centerRoutes);    
+app.use("/api/bill", billManageRoutes);
+   
+app.use("/api/admin/user-manage", UserManageRoute);
+app.use("/api/admin", adminRoute); 
 app.use("/api/admin/center-status", centerStatusRoute);
 app.use("/api/admin/ratings", ratingRoute);
 app.use("/api/admin/account", AccountRoute);
-app.use("/api/admin", adminRoute);
+app.use("/api/admin/bill-manage", billManageRoute);
 
 const server = http.createServer(app);
 
