@@ -121,7 +121,7 @@ app.use("/api/admin/bill-manage", billManageRoute);
 app.use("/api/admin/ratings", ratingRoute);
 app.use("/api/admin/news", newsRoutes);
 app.use("/api/admin/sell-histories", sellHistoryRoutes);
-
+app.use("/api/admin/report/", Report);
 
 
 
