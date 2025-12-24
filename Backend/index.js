@@ -92,14 +92,21 @@ app.get('/api/csrf-token', protect, csrfProtection, (req, res) => {
 const uploadDir = path.join(process.cwd(), "uploads");
 app.use('/uploads', express.static(uploadDir));
 
+// Apply CSRF Protection on post
+app.put(csrfProtection)
+app.post(csrfProtection)
+app.patch(csrfProtection)
+app.delete(csrfProtection)
+
 // Áp dụng bảo vệ CSRF cho các phương thức thay đổi dữ liệu
-app.use(["/api/booking", "/api/bill"], csrfProtection); // Đảm bảo các route đặt sân/thanh toán được bảo vệ
+app.use(["/api/booking", "/api/bill"]);
 app.use("/api/users", userRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/booking", bookingRoutes);   
 app.use("/api/centers", centersRoutes);   
 app.use("/api/center", centerRoutes);    
 app.use("/api/bill", billManageRoutes);
+app.use("/api/news", newsClientRoute);
    
 app.use("/api/admin/user-manage", UserManageRoute);
 app.use("/api/admin", adminRoute); 
@@ -107,6 +114,8 @@ app.use("/api/admin/center-status", centerStatusRoute);
 app.use("/api/admin/ratings", ratingRoute);
 app.use("/api/admin/account", AccountRoute);
 app.use("/api/admin/bill-manage", billManageRoute);
+app.use("/api/admin/ratings", ratingRoute);
+app.use("/api/admin/news", newsRoutes);
 
 const server = http.createServer(app);
 
