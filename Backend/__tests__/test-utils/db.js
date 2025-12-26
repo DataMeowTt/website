@@ -8,7 +8,7 @@ export const connect = async () => {
     }
 
     try {
-        const uri = process.env.MONGO_URI;
+        const uri = process.env.MONGO_URI || 'mongodb://localhost:27017/test';
         console.log("MongoDB: Đang cố gắng kết nối mặc định tới:", uri);
         mongoose.set('bufferCommands', true);
         mongoose.set('autoIndex', true);
