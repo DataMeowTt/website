@@ -1,58 +1,45 @@
-import React from 'react';
-import './App.css';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import Home from './pages/Home';
-import './styles/global.css';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
-import UserProfile from "./pages/UserProfile";
-import Service from "./pages/Service";
-import Competition from "./pages/Competition"
-import Contact from "./pages/Contact";
-import Policy from './pages/Policy';
-import News from './pages/News';
-import Centers from "./pages/Centers";
-import BookingSchedule from './pages/Booking';
-import PaymentPage from './pages/Payment';
-import ResetPasswordPage from "./pages/ResetPassword";
+import DashboardAdmin from "@/pages/Dashboard";
+import Login from "@/pages/Login";
+import AdminNews from '@/pages/news';
+import RatingManagement from '@/pages/ratingManagement';
+import Account from '@/pages/Account';
+import Shop from '@/pages/shop';
+import StockManagement from '@/pages/stockManagement';
+import Report from '@/pages/Report'
+import UserManage from './pages/UserManage';
+import AdminBillList from './pages/BillManage';
+import CreateFixedBooking from './pages/CreateFixedBooking';
+import CourtStatusPage from './pages/centerStatus';
 
-import WeatherDisplay from './components/WeatherDisplay'; 
-import Scroll from './components/Scroll'; 
-
-import { AuthProvider } from './contexts/AuthContext';
 
 
 function App() {
+  const isAuthenticated = false;  // Thay đổi theo logic xác thực thực tế
+
   return (
-    <AuthProvider>
-      <Router>
-        <Scroll />
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <>
-                <Header />
-                <Home />
-                <Footer />
-              </>
-            }
-          />
-          <Route path="/profile" element={<UserProfile />} />
-          <Route path="/service" element={<Service />} />
-          <Route path="/competition" element={<Competition />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/policy" element={<Policy />} />
-          <Route path="/news" element={<News />} />
-          <Route path="/centers" element={<Centers />} />
-          <Route path="/booking" element={<BookingSchedule />} />
-          <Route path="/payment" element={<PaymentPage />} />
-          <Route path="/reset-password/:token/:userId" element={<ResetPasswordPage />} />
-        </Routes>
-        <WeatherDisplay />
-      </Router>
-    </AuthProvider>
+    <Router>
+      <Routes>
+        {/* Chuyển hướng trang chủ tùy thuộc vào trạng thái đăng nhập */} 
+        <Route path="/" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} />
+        
+        <Route path="/login" element={<Login />} />
+        <Route path="/dashboard" element={<DashboardAdmin />} />            
+        <Route path="/news" element={<AdminNews />} /> 
+        <Route path="/account" element={<Account />} />
+        <Route path="/shop" element={<Shop />}/> 
+        <Route path="/stock" element={<StockManagement />}/> 
+        <Route path="/report" element={<Report />}/> 
+        <Route path="/ratings" element={<RatingManagement />} /> 
+        <Route path="/users-manage" element={<UserManage />} />
+        <Route path="/admin-bill-list" element={<AdminBillList />} />
+        <Route path="/create-fixed-booking" element={<CreateFixedBooking />} />
+        <Route path="/center-status" element={<CourtStatusPage />} />
+        
+      </Routes>
+    </Router>
   );
 }
 

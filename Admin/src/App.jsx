@@ -1,12 +1,13 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
-import Dashboard from "@/pages/Dashboard";
+
+import DashboardAdmin from "@/pages/Dashboard";
 import Login from "@/pages/Login";
-import News from '@/pages/News';
-import Rating from '@/pages/RatingManagement';
+import AdminNews from '@/pages/news';
+import RatingManagement from '@/pages/ratingManagement';
 import Account from '@/pages/Account';
-import Shop from '@/pages/Shop';
-import Stock from '@/pages/stockManagement';
+import Shop from '@/pages/shop';
+import StockManagement from '@/pages/stockManagement';
 import Report from '@/pages/Report'
 import UserManage from './pages/UserManage';
 import AdminBillList from './pages/BillManage';
@@ -25,16 +26,17 @@ function App() {
         <Route path="/" element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} />} />
         
         <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />            
-        <Route path="/news" element={<News />} /> 
+        <Route path="/dashboard" element={<DashboardAdmin />} />            
+        <Route path="/news" element={<AdminNews />} /> 
         <Route path="/account" element={<Account />} />
         <Route path="/shop" element={<Shop />}/> 
-        <Route path="/stock" element={<Stock />}/> 
+        <Route path="/stock" element={<StockManagement />}/> 
         <Route path="/report" element={<Report />}/> 
-        <Route path="/ratings" element={<Rating />} /> 
+        <Route path="/ratings" element={<RatingManagement />} /> 
         <Route path="/users-manage" element={<UserManage />} />
         <Route path="/admin-bill-list" element={<AdminBillList />} />
         <Route path="/create-fixed-booking" element={<CreateFixedBooking />} />
+        <Route path="/center-status" element={<CourtStatusPage />} />
         
       </Routes>
     </Router>
