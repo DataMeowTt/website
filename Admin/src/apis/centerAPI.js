@@ -1,4 +1,4 @@
-import axiosInstance from './axiosInstance'; // Import axiosInstance
+import axiosInstance from './axiosInstance';
 
 // Lấy danh sách các nhà thi đấu
 export const getCentersAPI = async () => {
@@ -7,7 +7,7 @@ export const getCentersAPI = async () => {
     return response.data;
   } catch (error) {
     console.error('Error fetching centers:', error);
-    throw error; // Re-throw the error to be handled by the caller
+    throw error;
   }
 };
 
