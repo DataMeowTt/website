@@ -16,8 +16,10 @@ import User from '../../Backend/models/users.js';
 import Center from '../../Backend/models/centers.js';
 import { updateUserPoints } from '../../Backend/services/userServices.js';
 
+// Mock JWT secret
 process.env.JWT_SECRET = 'test_secret_key';
 
+// Mock các module
 jest.mock('../../Backend/models/bookings.js', () => {
   const chain = {
     populate: jest.fn().mockReturnThis(),
@@ -50,7 +52,7 @@ jest.mock('../../Backend/models/bookings.js', () => {
   };
   return Booking;
 });
-
+// Patch: Improve Center mock to support .lean() chain and dynamic return for find/findById
 jest.mock('../../Backend/models/centers.js', () => {
   let findReturn = [];
   let findByIdMap = {};
@@ -69,7 +71,7 @@ jest.mock('../../Backend/models/centers.js', () => {
   };
   return Center;
 });
-
+// Patch lại mock Court để trả về đúng name cho từng courtId
 jest.mock('../../Backend/models/courts.js', () => {
   let findReturn = [];
   let findByIdReturn = null;
@@ -124,6 +126,7 @@ jest.mock('../../Backend/services/userServices.js', () => ({
   }),
 }));
 
+// Add mock for billManageServices at the top, after other imports
 jest.mock('../../Backend/services/billManageServices.js', () => {
   const original = jest.requireActual('../../Backend/services/billManageServices.js');
   return {

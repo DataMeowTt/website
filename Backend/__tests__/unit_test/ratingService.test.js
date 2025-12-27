@@ -6,6 +6,7 @@ import {
     getCommentsForCenterService
 } from '../../Backend/services/ratingService.js';
 
+// Mock Rating model
 jest.mock('../../Backend/models/ratings.js', () => ({
     find: jest.fn(),
     findByIdAndDelete: jest.fn()

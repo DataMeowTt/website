@@ -7,13 +7,13 @@ const TIMES = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22
 
 export const getCourtsByCenter = async (centerId) => {
   try {
-    console.log(`Nhận yêu cầu lấy sân cho centerId: ${centerId}`);
+    console.log(`🔍 Nhận yêu cầu lấy sân cho centerId: ${centerId}`);
     const objectId = new mongoose.Types.ObjectId(centerId);
     const courts = await Court.find({ centerId: objectId }).lean();
-    console.log('Danh sách sân:', courts);
+    console.log(`✅ Danh sách sân:`, courts);
     return courts;
   } catch (error) {
-    console.error('Lỗi khi lấy danh sách sân:', error.message);
+    console.error('❌ Lỗi khi lấy danh sách sân:', error.message);
     throw new Error('Không thể lấy danh sách sân');
   }
 };
@@ -74,4 +74,41 @@ export const getCenterDetailById = async (centerId) => {
   }
 };
 
+export const getAllCenters = async () => {
+  try {
+    console.log('🔍 Nhận yêu cầu lấy toàn bộ trung tâm');
+    const centers = await Center.find({}).lean();
+    console.log('✅ Danh sách trung tâm:', centers);
 
+    const updatedCenters = await Promise.all(
+      centers.map(async (center) => {
+        const count = await updateBookingCountForCenter(center._id);
+        return { ...center, bookingCount: count };
+      })
+    );
+
+    return updatedCenters;
+  } catch (error) {
+    console.error('❌ Lỗi khi lấy danh sách trung tâm:', error.message);
+    throw new Error('Không thể lấy danh sách trung tâm');
+  }
+};
+
+export const updateBookingCountForCenter = async (centerId) => {
+  try {
+    const count = await Booking.countDocuments({
+      centerId: new mongoose.Types.ObjectId(centerId),
+      status: 'paid',
+    });
+    console.log(`✅ Cập nhật bookingCount cho centerId ${centerId}: ${count}`);
+    const updatedCenter = await Center.findByIdAndUpdate(
+      centerId,
+      { bookingCount: count },
+      { new: true }
+    );
+    return updatedCenter.bookingCount;
+  } catch (error) {
+    console.error('❌ Lỗi khi cập nhật booking count:', error.message);
+    throw new Error('Không thể cập nhật booking count');
+  }
+};

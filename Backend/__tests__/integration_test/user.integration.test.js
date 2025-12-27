@@ -8,6 +8,7 @@ import bcrypt from 'bcryptjs';
 import fs from 'fs/promises';
 import path from 'path';
 
+// Mock sendEmailService để tránh gửi email thực
 jest.mock('../../src/middleware/userMiddleware.js', () => ({
   sendEmailService: jest.fn().mockResolvedValue(true),
   checkEmailExistsService: jest.fn().mockResolvedValue({ success: true }),
@@ -73,6 +74,7 @@ describe('User API Integration Tests', () => {
     userId = user._id;
     console.log('MongoDB: Created user:', userId);
 
+    // Tạo center mẫu
     await Center.create({
       _id: new mongoose.Types.ObjectId('67ca6e3cfc964efa218ab7d8'),
       name: 'Nhà thi đấu quận Thanh Xuân',
@@ -100,6 +102,7 @@ describe('User API Integration Tests', () => {
     });
     console.log('MongoDB: Created center:', '67ca6e3cfc964efa218ab7d8');
 
+    // Tạo chart mẫu
     await Chart.create({
       _id: new mongoose.Types.ObjectId('67e97632d19612b98ef0fbc5'),
       user: user._id,
@@ -120,6 +123,7 @@ describe('User API Integration Tests', () => {
     });
     console.log('MongoDB: Created chart:', '67e97632d19612b98ef0fbc5');
 
+    // Tạo rating mẫu
     await Rating.create({
       _id: new mongoose.Types.ObjectId('67ebbe5ded02a051f31eb972'),
       center: new mongoose.Types.ObjectId('67ca6e3cfc964efa218ab7d8'),
@@ -129,6 +133,7 @@ describe('User API Integration Tests', () => {
     });
     console.log('MongoDB: Created rating:', '67ebbe5ded02a051f31eb972');
 
+    // Đăng nhập để lấy token JWT
     const loginRes = await global.request
       .post('/api/users/login')
       .send({ username: 'user06', password: 'Password123!' })

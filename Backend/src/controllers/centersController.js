@@ -3,7 +3,7 @@ import {
   getTimeslotPrice,
   getCenterDetailById,
   getAllCenters,
-} from '../services/centerServices.js';
+} from '../services/centerServices.js'; // Sửa đường dẫn từ courtService.js thành centerServices.js
 
 export const getCourtsByCenterController = async (req, res) => {
   try {

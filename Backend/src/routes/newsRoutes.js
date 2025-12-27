@@ -1,3 +1,4 @@
+// newsRoutes.js
 import express from "express";
 import {
   createNews,
@@ -10,23 +11,21 @@ import { protect, restrictToAdmin } from "../middleware/authMiddleware.js";
 import csrfConfig from '../middleware/csrfConfig.js';
 
 const router = express.Router();
+const csrfProtection = csrfConfig;
 
-router.use("/", protect)          // yêu cầu đăng nhập
-router.use("/", restrictToAdmin)  // giới hạn quyền truy cập -- admin
-
-router.get("/", getNewsController);
+router.get("/", protect, restrictToAdmin, getNewsController);
 
 // Tạo tin tức mới
-router.post("/", createNews);
+router.post("/", protect, restrictToAdmin, csrfProtection, createNews);
 
 // Lấy chi tiết tin tức theo ID
-router.get("/:id", getNewsById);
+router.get("/:id", protect, restrictToAdmin, getNewsById);
 
 // Cập nhật tin tức theo ID
-router.put("/:id", updateNews);
+router.put("/:id", protect, restrictToAdmin, csrfProtection, updateNews);
 
 // Xoá tin tức theo ID
-router.delete("/:id", deleteNews);
+router.delete("/:id", protect, restrictToAdmin, csrfProtection, deleteNews);
 
 
 

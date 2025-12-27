@@ -21,6 +21,7 @@ FIXED_USER_ID_FALLBACK = "67bd323489acfa439c4d7947"
 CSRF_COOKIE_NAME = "_csrf"
 CSRF_TOKEN_BODY_KEY = "csrfToken"
 
+# --- Dữ liệu Centers và Courts (đã cung cấp) ---
 ALL_CENTERS_DATA = [
     { "_id": { "$oid": "67ca6e3cfc964efa218ab7d8" }, "name": "Nhà thi đấu quận Thanh Xuân", "totalCourts": 4 },
     { "_id": { "$oid": "67ca6e3cfc964efa218ab7d9" }, "name": "Nhà thi đấu quận Cầu Giấy", "totalCourts": 6 },
@@ -53,19 +54,20 @@ ALL_COURTS_DATA = [
     { "_id": { "$oid": "67d852208592f1451fe4a3d0" }, "centerId": { "$oid": "67ca6e3cfc964efa218ab7d9" }, "name": "Sân 6" }
 ]
 
+# Map center OID to a list of court OIDs for easy lookup
 CENTER_COURTS_MAP = {}
 for court in ALL_COURTS_DATA:
     center_oid = court['centerId']['$oid'] if 'centerId' in court else None
     court_oid = court['_id']['$oid']
-    if center_oid: 
+    if center_oid: # Only add if centerId exists
         if center_oid not in CENTER_COURTS_MAP:
             CENTER_COURTS_MAP[center_oid] = []
         CENTER_COURTS_MAP[center_oid].append(court_oid)
 
-
+# List of all center OIDs to choose from
 ALL_CENTER_OIDS = [center['_id']['$oid'] for center in ALL_CENTERS_DATA]
 
-
+# --- Cấu hình Tài khoản Test ---
 TEST_USERS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "test_users.csv")
 user_queue = queue.Queue()
 
@@ -82,7 +84,7 @@ except Exception as e:
 
 
 class BookingUser(HttpUser):
-    wait_time = between(5, 10) 
+    wait_time = between(5, 10) # Đã thay đổi thành constant(0) để kiểm tra thông lượng tối đa
     host = API_HOST
 
     auth_token = None
@@ -112,10 +114,16 @@ class BookingUser(HttpUser):
         self.client.delete = self._custom_delete
 
     def _reset_booking_context(self):
+        """
+        Resets the selected center, court, date, and clears the rejected timeslots cache
+        for the next booking attempt.
+        """
+        # Select a random date for the user's session (within the next 30 days)
         random_date = date.today() + timedelta(days=random.randint(0, 29))
         self.shared_date = random_date.strftime("%Y-%m-%d")
         print(f"User {self.username}: Session date set to {self.shared_date}")
 
+        # Choose a random Center and Court
         if ALL_CENTER_OIDS:
             self.selected_center_id = random.choice(ALL_CENTER_OIDS)
             valid_courts_for_center = CENTER_COURTS_MAP.get(self.selected_center_id, [])
@@ -131,11 +139,16 @@ class BookingUser(HttpUser):
             self.selected_center_id = None
             self.selected_court_id = None
 
+        # Clear the rejected timeslots cache for the new context
         self.rejected_timeslots_cache = {}
-        self.has_selected_timeslot = False 
+        self.has_selected_timeslot = False # Reset flag
 
 
     def _toggle_pending_timeslot_internal(self):
+        """Helper: Simulates selecting/deselecting a timeslot in cache.
+        Returns the selected_hour if successful (200 response and timeslot reflected), None otherwise.
+        Updates rejected_timeslots_cache if a timeslot is rejected at this stage.
+        """
         if not self.is_authenticated:
             return None
 
@@ -151,8 +164,9 @@ class BookingUser(HttpUser):
         cache_key = (self.selected_center_id, self.selected_court_id, self.shared_date)
         current_rejected_slots = self.rejected_timeslots_cache.get(cache_key, set())
 
-        max_toggle_attempts = 5 
+        max_toggle_attempts = 5 # Number of attempts to successfully toggle a timeslot
         for attempt in range(max_toggle_attempts):
+            # Filter out already rejected slots from available_hours
             selectable_hours = [hour for hour in available_hours if hour not in current_rejected_slots]
 
             if not selectable_hours:
@@ -173,6 +187,8 @@ class BookingUser(HttpUser):
             if response.status_code == 200:
                 try:
                     response_json = response.json()
+                    # Verify if the selected timeslot is actually in the returned booking
+                    # This assumes the toggle response returns the current pending booking state
                     if response_json and response_json.get('booking') and response_json['booking'].get('courts'):
                         found_timeslot_in_response = False
                         for court_booking in response_json['booking']['courts']:

@@ -1,3 +1,9 @@
+
+
+
+// =========================
+// File: controllers/ratingController.js
+// =========================
 import * as ratingService from '../services/ratingService.js';
 
 export const getCommentsForCenter = async (req, res) => {
@@ -10,7 +16,9 @@ export const getCommentsForCenter = async (req, res) => {
     res.status(error.status || 500).json({ message: error.message || "Server error" });
   }
 };
-
+/**
+ * Controller: get ratings for a specific center
+ */
 export async function getRatingsByCenterController(req, res, next) {
   try {
     const { centerId } = req.params;
@@ -22,6 +30,9 @@ export async function getRatingsByCenterController(req, res, next) {
   }
 }
 
+/**
+ * Controller: delete a specific rating
+ */
 export async function deleteRatingController(req, res, next) {
   try {
     const { id } = req.params;

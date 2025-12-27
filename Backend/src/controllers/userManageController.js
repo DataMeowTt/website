@@ -1,3 +1,4 @@
+// controllers/adminController.js
 import { getAllUsersService, deleteUser } from "../services/userManageServices.js";
 
 export const getAllUsers = async (req, res) => {

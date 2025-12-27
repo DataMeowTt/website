@@ -1,10 +1,10 @@
-import axiosInstance from "../config/axiosConfig"; 
+import axiosInstance from "../config/axiosConfig"; // Đường dẫn tới file định nghĩa axiosInstance
 
 // API lấy toàn bộ danh sách các trung tâm (phiên bản admin)
 export const getAllCenters = async () => {
   try {
     const response = await axiosInstance.get("/api/admin/center-status/get-all-centers");
-    return response.data.data; 
+    return response.data.data; // Mảng các trung tâm
   } catch (error) {
     console.error("Error fetching centers:", error.response?.data || error.message);
     throw error;
@@ -38,7 +38,8 @@ export const getCourtsByCenter = async (centerId) => {
     const response = await axiosInstance.get("/api/admin/center-status/get-courts", {
       params: { centerId }
     });
-    return response.data.data;
+    // Giả sử API trả về { success: true, data: [...] }
+    return response.data.data; // Trả về mảng sân
   } catch (error) {
     console.error("Lỗi khi lấy danh sách sân:", error.response?.data || error.message);
     throw error;

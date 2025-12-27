@@ -16,26 +16,26 @@ import { protect, restrictToClient } from "../middleware/authMiddleware.js";
 import { uploadMiddleware } from "../middleware/uploadMiddleware.js";
 
 import { loginRateLimiter } from '../middleware/rateLimitMiddleware.js';
+import csrfConfig from '../middleware/csrfConfig.js';
 
 const router = express.Router();
+const csrfProtection = csrfConfig;
 
 // Các route không yêu cầu đăng nhập và không cần CSRF
 router.post("/forgot-password-email", forgotPasswordByEmailController);
 router.post("/reset-password/:token/:userId", resetPasswordController);
 
-// Các route không yêu cầu đăng nhập 
+// Các route không yêu cầu đăng nhập
 router.post("/register", registerUserController);
-router.post("/login", loginRateLimiter, loginUserController);
+router.post("/login", loginUserController); // Thêm loginRateLimiter
 
 // Các route yêu cầu đăng nhập và chỉ dành cho client
-router.use(protect)
-router.use(restrictToClient)
-router.get("/me", getUserInfoController);
-router.post("/logout", logoutController);
-router.put("/update", uploadMiddleware, updateUserController);
-router.put("/change-password", updateUserPasswordController);
-router.get("/get-chart", getChartController);
-router.get("/detailed-stats", getDetailedBookingStatsController);
-router.post("/insert-ratings", insertRating);
+router.get("/me", protect, restrictToClient, getUserInfoController);
+router.post("/logout", protect, restrictToClient, csrfProtection, logoutController);
+router.put("/update", protect, restrictToClient, uploadMiddleware, csrfProtection, updateUserController);
+router.put("/change-password", protect, restrictToClient, csrfProtection, updateUserPasswordController);
+router.get("/get-chart", protect, restrictToClient, getChartController);
+router.get("/detailed-stats", protect, restrictToClient, getDetailedBookingStatsController);
+router.post("/insert-ratings", protect, restrictToClient, csrfProtection, insertRating);
 
 export default router;

@@ -3,9 +3,7 @@ import { getRevenueAndCost, getMonthlyReport } from "../controllers/reportContro
 import { protect, restrictToAdmin } from "../middleware/authMiddleware.js";
 const router = express.Router();
 
-router.use("/",  protect, restrictToAdmin)
-
-router.get("/summary", getRevenueAndCost);
-router.get("/monthly", getMonthlyReport); 
+router.get("/summary", protect, restrictToAdmin, getRevenueAndCost);
+router.get("/monthly", protect, restrictToAdmin, getMonthlyReport); 
 
 export default router;

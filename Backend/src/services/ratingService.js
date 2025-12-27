@@ -1,4 +1,7 @@
-import '../models/users.js';
+// ======================
+// File: services/ratingService.js
+// ======================
+import '../models/users.js'; // Import model để Mongoose đăng ký "User"
 import Rating from '../models/ratings.js';
 
 /**
@@ -7,7 +10,7 @@ import Rating from '../models/ratings.js';
  */
 export async function getRatingsByCenter(centerId) {
   return await Rating.find({ center: centerId })
-    .populate('user', 'username email name')
+    .populate('user', 'username email name') // <- chọn các field bạn cần từ user
     .sort({ createdAt: -1 });
 }
 
@@ -24,6 +27,7 @@ export const getCommentsForCenterService = async (centerId) => {
     throw { status: 400, message: "Center ID is required" };
   }
   
+  // Lấy danh sách đánh giá theo centerId, sắp xếp giảm dần theo thời gian tạo (giả sử có trường createdAt)
   const reviews = await Rating.find({ center: centerId }).sort({ createdAt: -1 });
   return reviews;
 };

@@ -2,7 +2,7 @@ import Booking from '../models/bookings.js';
 import Court from '../models/courts.js';
 import User from '../models/users.js';
 import Center from '../models/centers.js';
-import { updateUserPoints } from './userServices.js'; 
+import { updateUserPoints } from './userServices.js'; // Giả sử bạn có một service để cập nhật điểm cho người dùng  
 
 // Hàm gộp timeslots liên tiếp
 const formatTimeslots = (timeslots) => {

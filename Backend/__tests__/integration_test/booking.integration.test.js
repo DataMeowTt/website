@@ -11,6 +11,7 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 import inMemoryCache from '../../src/config/inMemoryCache.js';
 
+// Mock external dependencies
 jest.mock('../../src/config/socket.js', () => ({
   initializeSocket: jest.fn(),
 }));
@@ -48,6 +49,7 @@ jest.mock('../../src/services/bookingServices.js', () => {
   };
 });
 
+// Mock console.log to capture logs if needed
 jest.spyOn(console, 'log').mockImplementation(() => {});
 
 describe('Booking API Integration Tests', () => {

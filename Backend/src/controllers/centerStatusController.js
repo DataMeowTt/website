@@ -1,5 +1,7 @@
-import { getFullPendingMapping } from "../services/bookingServices.js"; 
-import { getAllCenters, getCourtsByCenter } from "../services/centerServices.js"; 
+import { getFullPendingMapping } from "../services/bookingServices.js"; // Import getFullPendingMapping
+import { getAllCenters, getCourtsByCenter } from "../services/centerServices.js"; // Import getAllCenters và getCourtsByCenter từ centerServices.js
+
+// Controller lấy toàn bộ danh sách các trung tâm (phiên bản admin)
 export const getAllCentersController = async (req, res) => {
     try {
         // Gọi service để lấy danh sách trung tâm

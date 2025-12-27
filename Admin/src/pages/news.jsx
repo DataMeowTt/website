@@ -140,7 +140,6 @@ const AdminNews = () => {
               <tr>
                 <th className="py-2 px-4 border-b">Tiêu đề</th>
                 <th className="py-2 px-4 border-b">Nguồn tin</th>
-                <th className="py-2 px-4 border-b">Ngày tạo</th>
                 <th className="py-2 px-4 border-b">Hành động</th>
               </tr>
             </thead>
@@ -150,9 +149,6 @@ const AdminNews = () => {
                   <tr key={newsItem._id} className="hover:bg-gray-100">
                     <td className="py-2 px-4 border-b">{newsItem.title}</td>
                     <td className="py-2 px-4 border-b">{newsItem.source}</td>
-                    <td className="py-2 px-4 border-b">
-                      {new Date(newsItem.createdAt).toLocaleDateString()}
-                    </td>
                     <td className="py-2 px-4 border-b flex gap-2">
                       <button 
                         onClick={() => handleEdit(newsItem)}

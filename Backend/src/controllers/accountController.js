@@ -1,6 +1,4 @@
-import { 
-  updateAdminProfileService 
-} from "../services/accountService.js";
+import { updateAdminProfileService } from "../services/accountService.js";
 
 export const updateAdminProfile = async (req, res) => {
   try {

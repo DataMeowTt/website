@@ -1,3 +1,4 @@
+// newsService.js
 import New from "../models/news.js";
 
 

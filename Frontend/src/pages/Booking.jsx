@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import DatePicker from "../components/datepicker";
 import Legend from "../components/legend";
 import BookingTable from "../components/bookingTable";
-import PricingTable from "../components/pricingTable";
+import PricingTable from "../components/PricingTable";
 import ModalConfirmation from "../components/ModalConfirmation";
 import socket from "../socket";
 import { AuthContext } from "../contexts/AuthContext";

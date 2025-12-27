@@ -1,13 +1,12 @@
 import express from "express";
 import * as controller from "../controllers/sellhistoryController.js";
 import { protect, restrictToClient } from "../middleware/authMiddleware.js";
+import csrfConfig from '../middleware/csrfConfig.js';
 
 const router = express.Router();
-
-router.use("/", protect)
-router.use("/", restrictToClient)
+const csrfProtection = csrfConfig;
 
 // Tạo hóa đơn mới
-router.post("/", controller.create);
+router.post("/", protect, restrictToClient, csrfProtection, controller.create);
 
 export default router;

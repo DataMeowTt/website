@@ -69,3 +69,12 @@ export const getCenterInfoByIdController = async (req, res) => {
     return res.status(500).json({ success: false, error: error.message });
   }
 };
+
+export const getAllCentersController = async (req, res) => {
+  try {
+    const centers = await getAllCenters();
+    res.status(200).json({ success: true, data: centers });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};

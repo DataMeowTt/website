@@ -1,3 +1,4 @@
+// jest.setup.js
 import { jest } from '@jest/globals'
 jest.mock("mongoose", () => {
   const mockModel = {
@@ -5,7 +6,7 @@ jest.mock("mongoose", () => {
     create: jest.fn(),
     findById: jest.fn().mockImplementation(() => ({
       select: jest.fn().mockReturnThis(),
-      exec: jest.fn().mockResolvedValue(null), 
+      exec: jest.fn().mockResolvedValue(null), // Giá trị mặc định, sẽ được ghi đè trong bài kiểm thử
     })),
     findByIdAndUpdate: jest.fn(),
     countDocuments: jest.fn(),

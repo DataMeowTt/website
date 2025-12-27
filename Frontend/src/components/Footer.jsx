@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/footer.css';
 import { MessageSquare } from 'lucide-react'; 
+import ChatBox from '../components/ChatBox';
 
 const Footer = () => {
   const [chatOpen, setChatOpen] = useState(false);
@@ -123,6 +124,8 @@ const Footer = () => {
           </div>
         </div>
       </footer>
+
+      <ChatBox isOpen={chatOpen} onClose={toggleChat} />
 
       <button onClick={toggleChat} className="chat-toggle-btn">
         <MessageSquare size={24} />

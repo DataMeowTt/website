@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles/login.css';
-import { loginUser, registerUser } from '../../apis/users.js';
+import { loginUser, registerUser } from '../apis/users';
 import { AuthContext } from '../contexts/AuthContext.jsx';
-import { forgotPasswordByEmailSimpleApi } from '../../apis/users.js';
+import { forgotPasswordByEmailSimpleApi } from '../apis/users';
 
 const LoginModal = ({ isOpen, onClose }) => {
   const [activeMode, setActiveMode] = useState("login");

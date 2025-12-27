@@ -1,3 +1,4 @@
+// Import các module cần thiết
 import User from '../../Backend/models/users.js';
 import Booking from '../../Backend/models/bookings.js';
 import Chart from '../../Backend/models/charts.js';
@@ -9,9 +10,11 @@ import mongoose from 'mongoose';
 import { checkEmailExistsService, updateAvgRating, sendEmailService, checkEmailUniqueness } from '../../Backend/middleware/userMiddleware.js';
 import crypto from 'crypto';
 
+// Import userServices sau mock
 import * as userServices from '../../Backend/services/userServices.js';
 console.log('userServices:', userServices);
 
+// Mock các model để ghi đè mock mặc định từ jest.setup.js nếu cần
 jest.mock('../../Backend/models/users.js', () => {
   const UserMock = {
     find: jest.fn(),

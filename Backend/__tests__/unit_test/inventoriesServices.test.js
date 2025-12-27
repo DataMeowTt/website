@@ -7,6 +7,7 @@ import {
 import Inventory from '../../Backend/models/Inventories.js';
 import StockHistory from '../../Backend/models/stockhistory.js';
 
+// Keep track of mock state
 let mockState = {
   inventory1: {
     _id: 'inventory1',
@@ -21,6 +22,7 @@ let mockState = {
   }
 };
 
+// Initialize mock state for each test
 const initMockState = () => {
   mockState = {
     inventory1: {
@@ -37,6 +39,7 @@ const initMockState = () => {
   };
 };
 
+// Mock các model
 jest.mock('../../Backend/models/Inventories.js', () => ({
   findById: jest.fn().mockImplementation((id) => ({
     lean: jest.fn().mockImplementation(() => Promise.resolve({ ...mockState[id] }))

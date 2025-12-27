@@ -1,14 +1,14 @@
+// routes/adminRoutes.js
 import express from "express";
 import { protect, restrictToAdmin } from "../middleware/authMiddleware.js";
 import { getAllUsers, deleteUserController } from "../controllers/userManageController.js";
+import csrfConfig from '../middleware/csrfConfig.js';
 
 const router = express.Router();
+const csrfProtection = csrfConfig;
 
 // Endpoint: Lấy tất cả người dùng
-router.use(protect)
-router.use(restrictToAdmin)
-
-router.get("/get-all-users", getAllUsers);
-router.delete('/delete-user',deleteUserController);
+router.get("/get-all-users", protect, restrictToAdmin, getAllUsers);
+router.delete('/delete-user', protect, restrictToAdmin, csrfProtection, deleteUserController);
 
 export default router;

@@ -1,18 +1,17 @@
+// userServices.js
+import Rating from "../models/ratings.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import User from "../models/users.js";
 import mongoose from "mongoose";
+import Chart from "../models/charts.js";
 import dotenv from "dotenv";
+import Center from "../models/centers.js";
+import Booking from "../models/bookings.js";
+import { checkEmailExistsService, updateAvgRating, sendEmailService, checkEmailUniqueness } from "../middleware/userMiddleware.js";
 import path from "path";
 import fs from "fs/promises";
 import crypto from "crypto";
-
-import { checkEmailExistsService, updateAvgRating, sendEmailService, checkEmailUniqueness } from "../middleware/userMiddleware.js";
-
-import Rating from "../models/ratings.js";
-import User from "../models/users.js";
-import Chart from "../models/charts.js";
-import Center from "../models/centers.js";
-import Booking from "../models/bookings.js";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -338,31 +337,35 @@ export const updateUserLevel = async (userId) => {
 /**
  * Cập nhật số lượng completed bookings cho user
  */
-export const updateCompletedBookingsForUser = async (userId) => {
+export const updateCompletedBookingsForUser = async (userId, session = null) => {
     try {
-        const completedCount = await Booking.countDocuments({
-            userId: new mongoose.Types.ObjectId(userId),
-            status: "paid" // Assuming 'status' is the correct field for payment status
-        });
-        console.log(`Đếm completed bookings cho user ${userId}: ${completedCount}`);
-
-        const updatedUser = await User.findByIdAndUpdate(
-            userId,
-            { $set: { "stats.completedBookings": completedCount } },
-            { new: true, select: 'stats.completedBookings' } // Select only the updated field
-        );
-
-        if (updatedUser) {
-            console.log(`Cập nhật thành công stats.completedBookings cho user ${userId}: ${updatedUser.stats.completedBookings}`);
-        } else {
-            console.log(`Không tìm thấy user ${userId} để cập nhật stats.completedBookings.`);
-        }
-        return completedCount;
+      // Lưu ý: userId ở đây PHẢI là ObjectId, đã được chuyển đổi ở hàm gọi (bookedBookingInDB)
+      const completedCount = await Booking.countDocuments(
+        {
+          userId: userId, // Không cần new ObjectId() nữa vì nó đã là ObjectId
+          status: "paid"
+        },
+        { session } // Truyền session vào
+      );
+      console.log(`Đếm completed bookings cho user ${userId}: ${completedCount}`);
+  
+      const updatedUser = await User.findByIdAndUpdate(
+        userId, // findByIdAndUpdate tự xử lý ObjectId
+        { $set: { "stats.completedBookings": completedCount } },
+        { new: true, select: 'stats.completedBookings', session } // Truyền session vào
+      );
+  
+      if (updatedUser) {
+        console.log(`Cập nhật thành công stats.completedBookings cho user ${userId}: ${updatedUser.stats.completedBookings}`);
+      } else {
+        console.log(`Không tìm thấy user ${userId} để cập nhật stats.completedBookings.`);
+      }
+      return completedCount;
     } catch (error) {
-        console.error("Error updating completed bookings for user:", error);
-        throw error;
+      console.error("Error updating completed bookings for user:", error);
+      throw error;
     }
-};
+  };
 
 /**
  * Tăng tổng số bookings của user
@@ -424,45 +427,59 @@ export const updateUserPoints = async (userId, totalAmount) => {
 /**
  * Cập nhật số completed cho tháng tương ứng
  */
-export const updateChartForCompleted = async (userId, date = new Date()) => {
+export const updateChartForCompleted = async (userId, date = new Date(), session = null) => {
     if (!(date instanceof Date)) {
-        date = new Date(date);
+      date = new Date(date);
     }
     const monthNumber = date.getMonth() + 1;
     const monthKey = "T" + monthNumber;
-
-    // Use findOneAndUpdate with upsert to create if not exists and update atomically
-    const chartData = await Chart.findOneAndUpdate(
-        { user: userId, "months.month": monthKey },
-        { $inc: { "months.$.completed": 1 } }, // Increment 'completed' for the matched month
-        { new: true, upsert: true } // Return the updated document, create if not exists
+  
+    // userId ở đây PHẢI là ObjectId
+    
+    // 1. Thử cập nhật trực tiếp.
+    // Bỏ 'upsert: true' và 'new: true' để tránh lỗi positional operator
+    const updateResult = await Chart.findOneAndUpdate(
+      { user: userId, "months.month": monthKey }, // Query
+      { $inc: { "months.$.completed": 1 } },       // Update
+      { session }                                 // Options (truyền session)
     );
-
-    // If the month did not exist, or if the document was newly created,
-    // we might need to initialize other months.
-    // This is a common pattern for chart data, but can be done more efficiently
-    // if the defaultMonths array is always expected to be full.
-    // For simplicity and to avoid complex aggregation for default,
-    // we'll fetch and save if the direct update didn't work as expected (e.g., new user).
-    if (!chartData || !chartData.months.find(m => m.month === monthKey)) {
-        let existingChart = await Chart.findOne({ user: userId });
-        if (!existingChart) {
-            const defaultMonths = [];
-            for (let i = 1; i <= 12; i++) {
-                defaultMonths.push({ month: "T" + i, completed: 0, cancelled: 0 });
-            }
-            existingChart = new Chart({ user: userId, months: defaultMonths });
+  
+    // 2. Nếu updateResult là null (tức là không tìm thấy document/month)
+    // thì chúng ta thực hiện logic "tạo mới/fallback"
+    if (!updateResult) {
+      console.log(`Không tìm thấy chart cho user ${userId} và tháng ${monthKey}, đang tiến hành upsert...`);
+      
+      // Dùng .session() cho findOne
+      let existingChart = await Chart.findOne({ user: userId }).session(session);
+  
+      if (!existingChart) {
+        // Nếu chart chưa tồn tại, tạo mới
+        const defaultMonths = [];
+        for (let i = 1; i <= 12; i++) {
+          defaultMonths.push({ month: "T" + i, completed: 0, cancelled: 0 });
         }
-        const monthObj = existingChart.months.find((m) => m.month === monthKey);
-        if (monthObj) {
-            monthObj.completed += 1;
-        }
-        await existingChart.save();
-        return existingChart;
+        existingChart = new Chart({ user: userId, months: defaultMonths });
+      }
+  
+      // Tìm tháng và cập nhật
+      const monthObj = existingChart.months.find((m) => m.month === monthKey);
+      if (monthObj) {
+        monthObj.completed += 1;
+      } else {
+        // Trường hợp cực hiếm: chart tồn tại nhưng thiếu tháng
+        existingChart.months.push({ month: monthKey, completed: 1, cancelled: 0 });
+      }
+  
+      // Dùng .save({ session })
+      await existingChart.save({ session });
+      console.log(`Đã upsert chart cho user ${userId}, tháng ${monthKey}`);
+      return existingChart;
     }
-
-    return chartData;
-};
+    
+    console.log(`Đã cập nhật chart (inc) cho user ${userId}, tháng ${monthKey}`);
+    // Trả về kết quả đã cập nhật (nếu cần, có thể fetch lại, nhưng thường là không)
+    return updateResult; 
+  };
 
 /**
  * Cập nhật số cancelled cho tháng tương ứng
@@ -769,48 +786,59 @@ export const insertRatingService = async ({ centerId, userId, stars, comment }) 
     await newRating.save();
     console.log("✅ Đã thêm rating thành công!");
 
+    await updateAvgRating(centerId);
+
     return newRating;
 };
 
 /**
  * Cập nhật trung tâm yêu thích
  */
-export const updateFavouriteCenter = async (userId, centerId) => {
+export const updateFavouriteCenter = async (userId, centerId, session = null) => {
     try {
-        const user = await User.findById(userId);
-        if (!user) {
-            throw new Error("User không tồn tại");
-        }
-
-        const center = await Center.findById(centerId);
-        if (!center) {
-            throw new Error("Trung tâm không tồn tại");
-        }
-
-        const centerName = center.name;
-
-        // Try to increment the count for an existing favorite center
-        const updateResult = await User.updateOne(
-            { _id: userId, "favouriteCenter.centerName": centerName },
-            { $inc: { "favouriteCenter.$.bookingCount": 1 } }
+      // userId và centerId ở đây PHẢI là ObjectId
+      
+      // Dùng .session() cho findById
+      const user = await User.findById(userId).session(session);
+      if (!user) {
+        throw new Error("User không tồn tại");
+      }
+  
+      // Dùng .session() cho findById
+      const center = await Center.findById(centerId).session(session);
+      if (!center) {
+        throw new Error("Trung tâm không tồn tại");
+      }
+  
+      const centerName = center.name;
+  
+      // Try to increment the count for an existing favorite center
+      // Truyền session vào updateOne
+      const updateResult = await User.updateOne(
+        { _id: userId, "favouriteCenter.centerName": centerName },
+        { $inc: { "favouriteCenter.$.bookingCount": 1 } },
+        { session }
+      );
+  
+      if (updateResult.matchedCount === 0) {
+        // If no existing favorite center was found, add a new one
+        // Truyền session vào updateOne
+        await User.updateOne(
+          { _id: userId },
+          { $push: { favouriteCenter: { centerName: centerName, bookingCount: 1 } } },
+          { session }
         );
-
-        if (updateResult.matchedCount === 0) {
-            // If no existing favorite center was found, add a new one
-            await User.updateOne(
-                { _id: userId },
-                { $push: { favouriteCenter: { centerName: centerName, bookingCount: 1 } } }
-            );
-        }
-
-        const updatedUser = await User.findById(userId).select('favouriteCenter');
-        console.log(`Đã cập nhật danh sách yêu thích của user ${userId}`);
-        return updatedUser.favouriteCenter;
+      }
+  
+      // Dùng .session() cho findById
+      const updatedUser = await User.findById(userId).select('favouriteCenter').session(session);
+      console.log(`Đã cập nhật danh sách yêu thích của user ${userId}`);
+      return updatedUser.favouriteCenter;
     } catch (error) {
-        console.error("Error updating favourite center:", error);
-        throw new Error("Có lỗi xảy ra khi cập nhật danh sách yêu thích");
-    } 
-};
+      console.error("Error updating favourite center:", error);
+      throw new Error("Có lỗi xảy ra khi cập nhật danh sách yêu thích");
+    }
+  };
 
 /**
  * Lấy thống kê booking của user

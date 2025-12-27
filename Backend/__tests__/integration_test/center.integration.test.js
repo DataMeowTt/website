@@ -15,7 +15,7 @@ jest.mock('../../src/config/dbChangeStream.js', () => ({
 }));
 
 describe('Center Routes Functional Tests (with MongoDB Local)', () => {
-  let cookies = ''; 
+  let cookies = ''; // Store session cookies
 
   beforeAll(async () => {
     await db.connect();
@@ -30,7 +30,7 @@ describe('Center Routes Functional Tests (with MongoDB Local)', () => {
 
   beforeEach(async () => {
     await db.clearDatabase();
-    cookies = ''; 
+    cookies = ''; // Reset cookies before each test
   });
 
   afterAll(async () => {
@@ -96,6 +96,7 @@ describe('Center Routes Functional Tests (with MongoDB Local)', () => {
     const response = await global.request.get('/api/csrf-token').set('Cookie', cookies);
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('csrfToken');
+    // Store session cookie from response)
     cookies = response.headers['set-cookie'] || cookies;
     return response.body.csrfToken;
   };

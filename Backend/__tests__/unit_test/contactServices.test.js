@@ -1,6 +1,7 @@
 import { createContactService, getContactsService } from '../../Backend/services/contactServices.js';
 import Contact from '../../Backend/models/contacts.js';
 
+// Mock Contact model
 jest.mock('../../Backend/models/contacts.js', () => {
   const mockContactInstance = jest.fn();
   return jest.fn().mockImplementation((data) => {
@@ -15,13 +16,16 @@ jest.mock('../../Backend/models/contacts.js', () => {
 
 describe('createContactService', () => {
   beforeEach(() => {
+    // Reset mocks trước mỗi test case
     Contact.mockClear();
     jest.clearAllMocks();
 
+    // Mock console.error để tránh log trong output test
     jest.spyOn(console, 'error').mockImplementation(() => {});
   });
 
   afterEach(() => {
+    // Khôi phục console.error sau mỗi test
     console.error.mockRestore();
   });
 
@@ -33,6 +37,7 @@ describe('createContactService', () => {
         content: 'I need help with my account.',
       };
 
+      // Mock hành vi của save cho instance được tạo trong createContactService
       const mockInstance = {};
       Contact.mockImplementationOnce((data) => {
         mockInstance.data = data;
@@ -45,8 +50,11 @@ describe('createContactService', () => {
 
       const result = await createContactService(contactData);
 
+      // Kiểm tra xem Contact constructor đã được gọi với dữ liệu đúng
       expect(Contact).toHaveBeenCalledWith(contactData);
+      // Kiểm tra xem save đã được gọi
       expect(mockInstance.save).toHaveBeenCalled();
+      // Kiểm tra kết quả trả về
       expect(result).toEqual({
         userId: 'user123',
         topic: 'Support Request',

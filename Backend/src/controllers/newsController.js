@@ -1,3 +1,7 @@
+
+
+
+// newsController.js
 import {
   addNews,
   fetchNewsById,

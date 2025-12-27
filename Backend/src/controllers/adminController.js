@@ -1,6 +1,5 @@
-import { 
-  authenticateAdmin 
-} from '../services/adminServices.js';
+// controllers/adminController.js
+import { authenticateAdmin } from '../services/adminServices.js'; // Cập nhật đường dẫn đúng
 
 /**
  * Controller xử lý đăng nhập admin.

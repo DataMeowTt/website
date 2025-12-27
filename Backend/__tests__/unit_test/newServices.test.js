@@ -8,6 +8,7 @@ import {
 } from '../../Backend/services/newsService.js';
 import News from '../../Backend/models/news.js';
 
+// Mock News model
 jest.mock('../../Backend/models/news.js', () => {
     return {
         __esModule: true,
@@ -55,6 +56,7 @@ describe('News Service', () => {
 
         it('should throw error if required fields are missing', async () => {
             const mockNews = {
+                // Missing title and content
                 image: 'test.jpg'
             };
 
