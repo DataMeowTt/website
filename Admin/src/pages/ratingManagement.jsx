@@ -76,7 +76,7 @@ export default function RatingManagement() {
           <tbody>
             {ratings.map((r) => (
               <tr key={r._id} className="text-center border-t">
-                <td className="py-2">{r.user.username || r.user.email}</td>
+                <td className="py-2">{r.user?.username || r.user?.email || 'Unknown'}</td>
                 <td className="py-2">{r.stars} ★</td>
                 <td className="py-2">{r.comment}</td>
                 <td className="py-2">{new Date(r.createdAt).toLocaleDateString('vi-VN')}</td>
