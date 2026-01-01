@@ -2,10 +2,10 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "@/pages/Dashboard";
 import Login from "@/pages/Login";
-import News from '@/pages/News';
-import Rating from '@/pages/RatingManagement';
+import News from '@/pages/news';
+import Rating from '@/pages/ratingManagement';
 import Account from '@/pages/Account';
-import Shop from '@/pages/Shop';
+import Shop from '@/pages/shop';
 import Stock from '@/pages/stockManagement';
 import Report from '@/pages/Report'
 import UserManage from './pages/UserManage';

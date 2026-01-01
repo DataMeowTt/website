@@ -6,7 +6,7 @@ import EditableInfoCard from '../components/EditableInfoCard';
 const pointsPerLevel = 1000;
 
 // Định nghĩa base URL của backend
-const BACKEND_URL = "http://localhost:3000"; // Backend chạy trên port 3000
+const BACKEND_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";; // Backend chạy trên port 3000
 
 const ProfileInfoTab = ({
   user,

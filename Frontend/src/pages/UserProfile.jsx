@@ -68,7 +68,7 @@ const UserProfile = () => {
   const totalAmountLS = Number(localStorage.getItem("totalAmount")) || 0;
 
   // Định nghĩa base URL của backend
-  const BACKEND_URL = "http://localhost:3000";
+  const BACKEND_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";;
 
   // Xử lý đường dẫn ảnh: thêm domain của backend nếu cần
   const getAvatarImagePath = (path) => {

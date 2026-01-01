@@ -1,5 +1,30 @@
 /* Thêm vào cuối file centerDetailModal.css */
 
+.modal-header {
+    padding: 20px 10px !important;
+    margin: 0 -20px !important;
+    border-radius: 8px !important;
+}
+
+.modal-container {
+    padding: 0 40px !important;
+}
+
+.modal-footer {
+    backdrop-filter: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    gap: 10px !important;
+    padding-bottom: 14px !important;
+}
+
+.modal-footer > * {
+    border: 1.2px solid !important;
+    border-color: rgba(0, 0, 0, 0.2) !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2) !important;
+}
+
+
 /* Reviews Form Styles */
 .review-form-container {
   background-color: #f8f8f8;
