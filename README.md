@@ -1,72 +1,111 @@
-# Getting Started with Create React App
+# Website Đặt sân 24/7 - nhóm thực hiện DeATuan
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Mô tả nghiệp vụ:
 
-## Available Scripts
+Hệ thống Datsan247 được phát triển nhằm hỗ trợ một số hoạt động bên lề thể thao tại sân tập. 
+  - Đối với người tập, website hỗ trợ dịch vụ theo dõi và đặt chỗ/hẹn trước trực tuyến trước khi khách hàng đến sân.
+  - Đối với quản trị viên (đơn vị quản lý sân bãi), đây là nền tảng quản lý số hóa các dịch vụ sân tập tại nhà thi đấu của họ, bao gồm các chức năng theo dõi, quản lý lịch đặt sân, doanh thu, kho hàng,... thay thế cho các hình thức sổ ghi chép truyền thống.  
 
-In the project directory, you can run:
+### Dịch vụ cung cấp và đối tượng phục vụ:
+- Chủ sân/Quản lý:
+  - Nhập thông tin về nhà thi đấu/sân đấu quản lý
+  - Cập nhật thông tin sân đấu
+  - Cập nhật tình trạng sân đấu (trống lịch/ đã đặt trước/ dừng phục vụ)
+  - Xem/Thu thập phản hồi, đánh giá từ khách hàng
+  - Quản lý tài khoản khách hàng
+  - Quản lý hoá đơn đặt sân/ dịch vụ sân
+  - Quản lý sản phẩm dịch vụ tại sân (gồm: nhập hàng, bán lẻ và thanh toán)
 
-### `npm start`
+- Khách hàng (người mua hàng):
+  - Xem/Tìm kiếm vị trí, thông tin sân cầu 
+  - Tra cứu/Theo dõi tình trạng sân theo khung giờ
+  - Tạo lịch đặt sân & Thanh toán thông minh
+  - Lựa chọn dịch vụ bổ sung (nước uống, dụng cụ,...)
+  - Hỗ trợ khách hàng 24/7 (nhân viên tư vấn hoặc chatbox AI)
+  - Trải nghiệm giải thi đấu mở rộng
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Cấu trúc mã nguồn:
+```
+@
+├── Admin/       # Giao diện truy cập cho quản trị viên, hiển thị các tab quản lý
+│
+├── Frontend/    # Giao diện truy cập cho người dùng thông thường, hỗ trợ đặt sân trực tuyến
+│
+└── Backend/     # Logic Backend cho cả 2 mảng giao diện phía trên
+```
 
-### `npm test`
+## Cài đặt và demo
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Cài đặt local
+- Trước khi thực hiện, tại mỗi folder, với mẫu file `.env.example`, đổi tên (hoặc sao chép) thành `.env`, điền một số trường thông tin còn thiếu (nếu có).
+  - Thường thì sẽ còn thiếu địa chỉ `mongoDB_URI` bạn phải tự setup.
+- Để cài đặt chạy local, ta sẽ khởi chạy 3 thành phần trên tại các cửa sổ terminal riêng biệt.
+- Mặc định:
+  - Backend: port 3000, yêu cầu `mongoDB_URI` (online hoặc local)
+  - Frontend: port 5173
+  - Backend: port 5174
 
-### `npm run build`
+#### Backend:
+```
+  cd Backend        # Di chuyển tới thư mục Backend
+  npm install       # Cài đặt các thư viện cần thiết (chỉ cần chạy lần đầu tải về, hệ thống sẽ tự tải về một folder node_modules chứa dependencies cần thiết) 
+  npm run start     # Khởi chạy chương trình (backend)
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+#### Frontend:
+```
+  cd Frontend       # Di chuyển tới thư mục Frontend
+  npm install       # Cài đặt các thư viện cần thiết (chỉ cần chạy lần đầu tải về, hệ thống sẽ tự tải về một folder node_modules chứa dependencies cần thiết) 
+  npm run start     # Khởi chạy chương trình (frontend)
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+#### Admin: (FE)
+```
+  cd Admin          # Di chuyển tới thư mục Admin
+  npm install       # Cài đặt các thư viện cần thiết (chỉ cần chạy lần đầu tải về, hệ thống sẽ tự tải về một folder node_modules chứa dependencies cần thiết) 
+  npm run start     # Khởi chạy chương trình (admin)
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Link deploy tham khảo 
+Nền tảng thực hiện Deploy:
+- Vercel: [Frontend](https://frontend-branch-datsan247.vercel.app) và [Admin](https://admin-branch-datsan247-1fhg.vercel.app)
+- Railway: Backend và MongoDB
 
-### `npm run eject`
+Tài khoản demo:
+- Người dùng thông thường (Frontend) - có thể tự đăng ký trên giao diện website
+  - Tên đăng nhập: viethung123
+  - Mặt khẩu: Viethung123456@
+- Quản trị viên (Admin) - cố định
+  - Tên đăng nhập: Admin02
+  - Mật khẩu: 123456
+ 
+** Lưu ý: Nếu re-deploy lại dự án, hãy đảm bảo `enviroment variables` của Backend được thống nhất với tên miền của triển khai Frontend để vượt qua các lớp bảo mật cơ bản (CORS và CSRF). Cụ thể: 2 biến `FRONTEND_URL` và `ADMIN_URL`.
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+ ## Công nghệ sử dụng
+ 
+ ### Framework:
+- Backend:   Node ExpressJS
+- Frontend:  ReactJS, áp dụng TailwindCSS
+- Database:  MongoDB
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Kiến trúc:
+- Backend: mô hình MVC và Middlewares Pattern
+- FrontEnd: định hướng Container, phân tách giao diện UI và logic (gọi API)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Kiểm thử (chưa hoàn thiện)
+- Backend: Jest
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Contributor:
+ - Trần Việt Hưng
+ - Nguyễn Trường Sơn
+ - Trần Anh Tuấn
+ 
+Thực hiện dưới dạng bài tập lớn cuối kỳ môn Phát Triển Ứng Dụng Web 2526I_INT3306_1
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-To learn React, check out the [React documentation](https://reactjs.org/).
 
-### Code Splitting
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
 
 
